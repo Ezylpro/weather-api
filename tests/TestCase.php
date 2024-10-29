@@ -9,6 +9,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Facades\Log;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -39,7 +40,7 @@ abstract class TestCase extends BaseTestCase
         return $locations->first();
     }
 
-    public function createForecast(int $city_id, Carbon $date = null): Forecast
+    public function createForecast(int $city_id, Carbon $date = null, $count = 1): Forecast
     {
         $date = $date ?? Carbon::now();
 
@@ -55,10 +56,34 @@ abstract class TestCase extends BaseTestCase
         ]);
     }
 
-    public function getRandomState(): State
+    public function createMultipleForecasts(int $city_id, Carbon $date = null, int $count = 1): void
     {
-        return State::query()
-            ->inRandomOrder()
-            ->first();
+        $date = $date ?? Carbon::now();
+        $finalDate = $date->clone()->addDays($count)->startOfDay();
+
+        for ($day = $date; $day->lt($finalDate); $day->addDay()) {
+            Forecast::query()->create([
+                'city_id' => $city_id,
+                'date' => $day->format('Y-m-d'),
+                'max_temp' => 27,
+                'min_temp' => 20,
+                'humidity' => 73,
+                'cloudiness' => 38,
+                'rain_probability' => 72,
+                'condition' => 'rain',
+            ]);
+        }
+    }
+
+    public function getRandomState($excluded_state_id = null): State
+    {
+        $query = State::query()
+            ->inRandomOrder();
+
+        if ($excluded_state_id) {
+            $query->where('id', '!=', $excluded_state_id);
+        }
+
+        return $query->first();
     }
 }

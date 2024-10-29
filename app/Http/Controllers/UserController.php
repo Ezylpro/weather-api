@@ -13,6 +13,8 @@ use Illuminate\Validation\ValidationException;
 class UserController extends Controller
 {
     /**
+     * Login
+     *
      * @unauthenticated
      */
     public function login(LoginRequest $request, AuthService $service): JsonResponse
@@ -30,7 +32,14 @@ class UserController extends Controller
         }
     }
 
-    public function profile(Request $request)
+
+
+    /**
+     * Profile
+     *
+     * Get the authenticated user profile.
+     */
+    public function profile(Request $request): UserProfileResource
     {
         $user = $request->user();
 

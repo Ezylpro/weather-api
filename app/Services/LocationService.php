@@ -2,23 +2,30 @@
 
 namespace App\Services;
 
+use App\Models\City;
 use App\Models\Forecast;
 use App\Models\SavedLocation;
+use App\Models\State;
 use Carbon\Carbon;
 use HttpException;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class LocationService
 {
+    /**
+     * @throws HttpException
+     */
     public function getUserSavedLocationsWithCurrentForecast(int $user_id): Collection
     {
         $savedLocations = $this->getUserSavedLocations($user_id);
 
         foreach ($savedLocations as $savedLocation) {
             if (empty($savedLocation->currentForecast)) {
-                $this->updateLocationForecasts($savedLocation);
+                $this->updateLocationForecasts($savedLocation->state, $savedLocation->city);
 
                 $savedLocation->currentForecast = $savedLocation->currentForecast()->first();
             }
@@ -38,39 +45,39 @@ class LocationService
     /**
      * @throws HttpException
      */
-    protected function updateLocationForecasts(Model $location): void
+    protected function updateLocationForecasts(State $state, City $city): void
     {
-        $response = Http::weatherApi($location->city->name, $location->state->name);
+        $response = Http::weatherApi($city->name, $state->name);
 
         if ($response->failed()) {
             throw new HttpException($response->body());
         }
 
         $forecasts = $response->json()['results']['forecast'];
-        $date = Carbon::createFromFormat('d/m/Y', $response->json()['results']['date']);
+        $date = Carbon::parse($response->json()['results']['date']);
 
         foreach ($forecasts as $forecast) {
 //            TODO: parse forecast data into a DTO
 
-            $this->deleteOldForecast($location, $date);
-            $this->createForecast($forecast, $location, $date);
+            $this->deleteOldForecast($city->id, $date);
+            $this->createForecast($forecast, $city->id, $date);
 
             $date->addDay();
         }
     }
 
-    protected function deleteOldForecast(Model $location, Carbon $date): void
+    protected function deleteOldForecast(int $city_id, Carbon $date): void
     {
         Forecast::query()
-            ->where('city_id', $location->city_id)
+            ->where('city_id', $city_id)
             ->where('date', $date->format('Y-m-d'))
             ->delete();
     }
 
-    private function createForecast(array $data, Model $location, Carbon $date): void
+    private function createForecast(array $data, int $city_id, Carbon $date): void
     {
         Forecast::query()->create([
-            'city_id' => $location->city_id,
+            'city_id' => $city_id,
             'date' => $date->format('Y-m-d'),
             'max_temp' => $data['max'],
             'min_temp' => $data['min'],
@@ -88,5 +95,44 @@ class LocationService
             'state_id' => $state_id,
             'city_id' => $city_id
         ]);
+    }
+
+    public function deleteSavedLocation(int $user_id, int $state_id, int $city_id): void
+    {
+        SavedLocation::query()
+            ->where('user_id', $user_id)
+            ->where('state_id', $state_id)
+            ->where('city_id', $city_id)
+            ->delete();
+    }
+
+    /**
+     * @throws HttpException
+     */
+    public function getLocationForecasts(State $state, City $city, int $user_id): City
+    {
+        $forecastLimit = config('settings.location_forecast_limit');
+        $forecasts = $this->getLocationForecastsBaseQuery($user_id, $city->id, $forecastLimit);
+
+        if ($forecasts->count() < $forecastLimit) {
+            $this->updateLocationForecasts($state, $city);
+        }
+
+        $city->setRelation('forecasts', $forecasts->get());
+        $city->setRelation('state', $state);
+        $city->loadCount(['savedLocations as is_saved' => function ($query) use ($user_id) {
+                $query->where('user_id', $user_id);
+            }
+        ]);
+
+        return $city;
+    }
+
+    private function getLocationForecastsBaseQuery(int $user_id, int $city_id, int $forecast_limit): Builder
+    {
+        return Forecast::query()
+            ->where('city_id', $city_id)
+            ->where('date', '>=', now()->format('Y-m-d'))
+            ->where('date', '<=', now()->addDays($forecast_limit)->format('Y-m-d'));
     }
 }

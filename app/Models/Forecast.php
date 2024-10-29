@@ -19,5 +19,6 @@ class Forecast extends Model
 
     protected $casts = [
         'date' => 'date',
+        'updated_at' => 'datetime',
     ];
 }

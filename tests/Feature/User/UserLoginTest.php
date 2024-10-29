@@ -17,7 +17,7 @@ class UserLoginTest extends TestCase
 
         $response->assertOk();
 
-        $response->assertJsonStructure([
+        $response->assertExactJsonStructure([
             'token',
         ]);
     }

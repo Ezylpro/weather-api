@@ -17,7 +17,7 @@ class LocationsListResource extends JsonResource
         return [
             'state' => StateResource::make($this->state),
             'city' => CityResource::make($this->city),
-            'updated_at' => $this->currentForecast->updated_at,
+            'updated_at' => $this->currentForecast->updated_at->toDateTimeString(),
             'max_temp' => $this->currentForecast->max_temp,
             'min_temp' => $this->currentForecast->min_temp,
             'rain_probability' => $this->currentForecast->rain_probability,

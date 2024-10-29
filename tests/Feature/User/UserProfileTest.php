@@ -15,7 +15,7 @@ class UserProfileTest extends TestCase
 
         $response->assertOk();
 
-        $response->assertJsonStructure([
+        $response->assertExactJsonStructure([
             'data' => [
                 'id',
                 'name',

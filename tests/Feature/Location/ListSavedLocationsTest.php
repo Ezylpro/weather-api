@@ -23,7 +23,7 @@ class ListSavedLocationsTest extends TestCase
 
         $response->assertSuccessful();
 
-        $response->assertJsonStructure([
+        $response->assertExactJsonStructure([
             'data' => [
                 '*' => [
                     'state' => [
@@ -68,6 +68,8 @@ class ListSavedLocationsTest extends TestCase
 
             return urldecode($request->url()) == "$url/weather?key=&locale=en&city_name=$city,$state";
         });
+
+        $this->assertDatabaseCount('forecasts', config('settings.location_forecast_limit'));
     }
 
     public function test_list_saved_locations_with_old_data(): void
@@ -82,7 +84,7 @@ class ListSavedLocationsTest extends TestCase
 
         $response->assertSuccessful();
 
-        $response->assertJsonStructure([
+        $response->assertExactJsonStructure([
             'data' => [
                 '*' => [
                     'state' => [
