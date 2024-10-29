@@ -14,7 +14,7 @@ Before getting started, ensure that Docker and Docker Compose are installed on y
 1. **Clone the Repository**
 
    ```bash
-   git clone git@github.com:Ezylpro/weather-api.git
+   git clone git@github.com:Ezylpro/weather-api.git && cd weather-api
    ```
 
 2. **Set Up Environment Configuration**
@@ -27,24 +27,30 @@ Before getting started, ensure that Docker and Docker Compose are installed on y
 
     > **Note:** You will need an `HG_BRASIL_KEY` to run the application. You can obtain your key by visiting [HG Brasil](https://hgbrasil.com/apis/planos?origin=weather) and adding it to your `.env` file.
 
-3. **Start the Docker Containers**
+3. **Install Dependencies**
 
-    Run the following command to start the Docker containers:
+   This command uses a small Docker container containing PHP and Composer to install the application's dependencies. You can read more at [this link](https://laravel.com/docs/11.x/sail#installing-composer-dependencies-for-existing-projects).
     
     ```bash
-    docker compose up -d --build
+    docker run --rm \
+      -u "$(id -u):$(id -g)" \
+      -v "$(pwd):/var/www/html" \
+      -w /var/www/html \
+      laravelsail/php83-composer:latest \
+      composer install --ignore-platform-reqs
     ```
    
-4. **Install Dependencies**
+    > **Note:** This command will run `composer install` to install the dependencies, so it may take a few moments to complete.
 
-   Run the following command to install Composer dependencies inside the container:
+    > **Note:** After the setup, you can start using Laravel Sail instead of `docker`. You can also create a shell alias to simplify this process. Check out this guide on setting up an alias: [Laravel Sail Alias Configuration](https://laravel.com/docs/11.x/sail#configuring-a-shell-alias)
+
+5. **Start the Containers**
+
+   After installing the project dependencies, run the following command to start the containers:
 
    ```bash
-   docker exec -it weather-api composer install
+   ./vendor/bin/sail up -d
    ```
-   
-    > **Note:** After the setup, you can start using Laravel Sail instead of `docker exec`. You can also create a shell alias to simplify this process. Check out this guide on setting up an alias:
-   [Laravel Sail Alias Configuration](https://laravel.com/docs/11.x/sail#configuring-a-shell-alias)
 
 5. **Generate Application Key**
 
@@ -59,8 +65,7 @@ Before getting started, ensure that Docker and Docker Compose are installed on y
     Run migrations to set up the database schema and seed initial data:
 
     ```bash
-    ./vendor/bin/sail artisan migrate
-    ./vendor/bin/sail artisan db:seed
+    ./vendor/bin/sail artisan migrate && ./vendor/bin/sail artisan db:seed
     ```
 
 ## You're All Set!
