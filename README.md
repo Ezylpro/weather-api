@@ -65,12 +65,12 @@ Before getting started, ensure that Docker and Docker Compose are installed on y
     Run migrations to set up the database schema and seed initial data:
 
     ```bash
-    ./vendor/bin/sail artisan migrate && ./vendor/bin/sail artisan db:seed
+    ./vendor/bin/sail artisan migrate --seed
     ```
 
 ## You're All Set!
 
-The Weather API is now ready to use.
+The Weather API is now ready to use. You can check out the already existing users credentials [here](./database/seeders/UserSeeder.php).
 
 - **Live Demo:** [weather-app.ezylpro.com/](https://weather-app.ezylpro.com/)
 - **API Documentation:** [weather-api.ezylpro.com/docs/api](http://weather-api.ezylpro.com/docs/api)
