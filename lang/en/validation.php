@@ -172,6 +172,8 @@ return [
     |
     */
 
+    'locations_limit' => 'The user can only have up to :limit locations.',
+
     'custom' => [
         'attribute-name' => [
             'rule-name' => 'custom-message',

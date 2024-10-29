@@ -11,5 +11,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('/locations')->controller(LocationController::class)->group(function () {
         Route::get('/saved', 'listSavedLocations');
+
+        Route::prefix('/{state}/{city}')->scopeBindings()->group(function () {
+            Route::post('/save', 'saveLocation');
+        });
     });
 });

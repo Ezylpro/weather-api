@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 
 class HttpServiceProvider extends ServiceProvider
@@ -20,10 +21,11 @@ class HttpServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Http::macro('weather-api', function ($city, $state) {
+        Http::macro('weatherApi', function ($city, $state) {
+            $base_url = config('services.hgbrasil.url');
             $api_key = config('services.hgbrasil.api_key');
 
-            return Http::get("https://api.hgbrasil.com/weather?key=$api_key&locale=en&city_name=$city,$state");
+            return Http::get("$base_url/weather?key=$api_key&locale=en&city_name=$city,$state");
         });
     }
 }

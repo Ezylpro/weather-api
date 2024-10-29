@@ -15,6 +15,7 @@ return [
     */
 
     'hgbrasil' => [
+        'url' => 'https://api.hgbrasil.com',
         'key' => env('HG_BRASIL_KEY'),
     ],
 

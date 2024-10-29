@@ -43,6 +43,7 @@ return new class extends Migration
             $table->timestamps();
             $table->foreignId('user_id')->references('id')->on('users');
             $table->foreignId('city_id')->references('id')->on('cities');
+            $table->foreignId('state_id')->references('id')->on('states');
         });
     }
 
@@ -51,6 +52,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('locations_structure_tables');
+        Schema::dropIfExists('saved_locations');
+        Schema::dropIfExists('forecasts');
+        Schema::dropIfExists('cities');
+        Schema::dropIfExists('states');
     }
 };
