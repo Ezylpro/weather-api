@@ -13,7 +13,7 @@ class LocationService
 
         foreach ($savedLocations as $savedLocation) {
             if (empty($savedLocation->currentForecast)) {
-                $this->updateCurrentForecast($savedLocation);
+//                $this->updateCurrentForecast($savedLocation);
             }
         }
     }
