@@ -67,8 +67,8 @@ Before getting started, ensure that Docker and Docker Compose are installed on y
 
 The Weather API is now ready to use.
 
-- **Live Demo:** [https://weather-app.ezylpro.com/](https://weather-app.ezylpro.com/)
-- **API Documentation:** [http://weather-api.ezylpro.com/docs/api](https://weather-api.ezylpro.com/docs/api)
+- **Live Demo:** [weather-app.ezylpro.com/](https://weather-app.ezylpro.com/)
+- **API Documentation:** [weather-api.ezylpro.com/docs/api](http://weather-api.ezylpro.com/docs/api)
 
 ---
 
