@@ -14,4 +14,6 @@ enum ForecastConditionEnum: string
     case CLOUD = 'cloud';
     case CLOUDLY_DAY = 'cloudly_day';
     case CLOUDLY_NIGHT = 'cloudly_night';
+    case NONE_DAY = 'none_day';
+    case NONE_NIGHT = 'none_night';
 }
