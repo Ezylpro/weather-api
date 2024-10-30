@@ -73,7 +73,7 @@ Before getting started, ensure that Docker and Docker Compose are installed on y
 The Weather API is now ready to use. You can check out the already existing users credentials [here](./database/seeders/UserSeeder.php).
 
 - **Live Demo:** [weather-app.ezylpro.com/](https://weather-app.ezylpro.com/)
-- **API Documentation:** [weather-api.ezylpro.com/docs/api](http://weather-api.ezylpro.com/docs/api)
+- **API Documentation:** [weather-api.ezylpro.com/docs/api](https://weather-api.ezylpro.com/docs/api)
 
 ---
 
