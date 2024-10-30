@@ -5,6 +5,7 @@ namespace App\DTOs;
 use App\Enums\ForecastConditionEnum;
 use Illuminate\Validation\Rules\Enum;
 use WendellAdriel\ValidatedDTO\Casting\EnumCast;
+use WendellAdriel\ValidatedDTO\Casting\IntegerCast;
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
 class WeatherApiResponseDTO extends ValidatedDTO
@@ -44,7 +45,12 @@ class WeatherApiResponseDTO extends ValidatedDTO
     protected function casts(): array
     {
         return [
-            'condition' => new EnumCast(ForecastConditionEnum::class)
+            'max_temp' => new IntegerCast(),
+            'min_temp' => new IntegerCast(),
+            'humidity' => new IntegerCast(),
+            'rain_probability' => new IntegerCast(),
+            'cloudiness' => new IntegerCast(),
+            'condition' => new EnumCast(ForecastConditionEnum::class),
         ];
     }
 }
