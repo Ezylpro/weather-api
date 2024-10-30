@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ForecastConditionEnum;
 use Illuminate\Database\Eloquent\Model;
 
 class Forecast extends Model
@@ -20,5 +21,6 @@ class Forecast extends Model
     protected $casts = [
         'date' => 'date',
         'updated_at' => 'datetime',
+        'condition' => ForecastConditionEnum::class
     ];
 }

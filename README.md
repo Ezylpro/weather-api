@@ -44,7 +44,7 @@ Before getting started, ensure that Docker and Docker Compose are installed on y
 
     > **Note:** After the setup, you can start using Laravel Sail to interact with docker. You can also create a shell alias to simplify this process. Check out this guide on setting up an alias: [Laravel Sail Alias Configuration](https://laravel.com/docs/11.x/sail#configuring-a-shell-alias)
 
-5. **Start the Containers**
+4. **Start the Containers**
 
    After installing the project dependencies, run the following command to start the containers:
 

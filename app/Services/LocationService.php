@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DTOs\WeatherApiResponseDTO;
 use App\Models\City;
 use App\Models\Forecast;
 use App\Models\SavedLocation;
@@ -57,7 +58,7 @@ class LocationService
         $date = Carbon::parse($response->json()['results']['date']);
 
         foreach ($forecasts as $forecast) {
-//            TODO: parse forecast data into a DTO
+            $forecast = WeatherApiResponseDTO::fromArray($forecast);
 
             $this->deleteOldForecast($city->id, $date);
             $this->createForecast($forecast, $city->id, $date);
@@ -74,17 +75,17 @@ class LocationService
             ->delete();
     }
 
-    private function createForecast(array $data, int $city_id, Carbon $date): void
+    private function createForecast(WeatherApiResponseDTO $dto, int $city_id, Carbon $date): void
     {
         Forecast::query()->create([
             'city_id' => $city_id,
             'date' => $date->format('Y-m-d'),
-            'max_temp' => $data['max'],
-            'min_temp' => $data['min'],
-            'humidity' => $data['humidity'],
-            'cloudiness' => $data['cloudiness'],
-            'rain_probability' => $data['rain_probability'],
-            'condition' => $data['condition'],
+            'max_temp' => $dto->max_temp,
+            'min_temp' => $dto->min_temp,
+            'humidity' => $dto->humidity,
+            'cloudiness' => $dto->cloudiness,
+            'rain_probability' => $dto->rain_probability,
+            'condition' => $dto->condition,
         ]);
     }
 
