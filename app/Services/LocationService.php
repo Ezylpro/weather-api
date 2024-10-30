@@ -48,14 +48,15 @@ class LocationService
      */
     protected function updateLocationForecasts(State $state, City $city): void
     {
-        $response = Http::weatherApi($city->name, $state->name);
+        $response = Http::weatherApi($city->name, $state->uf);
 
         if ($response->failed()) {
             throw new HttpException($response->body());
         }
 
         $forecasts = $response->json()['results']['forecast'];
-        $date = Carbon::parse($response->json()['results']['date']);
+        Log::info($response->json()['results']['date']);
+        $date = Carbon::createFromFormat('d/m/Y', $response->json()['results']['date']);
 
         foreach ($forecasts as $forecast) {
             $forecast = WeatherApiResponseDTO::fromArray($forecast);

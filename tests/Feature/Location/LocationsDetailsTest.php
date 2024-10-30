@@ -52,7 +52,7 @@ class LocationsDetailsTest extends TestCase
         Http::assertSent(function (Request $request) use ($city, $state) {
             $url = config('services.hgbrasil.url');
             $city = $city->name;
-            $state = $state->name;
+            $state = $state->uf;
 
             return urldecode($request->url()) == "$url/weather?key=&locale=en&city_name=$city,$state";
         });
@@ -148,7 +148,7 @@ class LocationsDetailsTest extends TestCase
         Http::assertSent(function (Request $request) use ($city, $state) {
             $url = config('services.hgbrasil.url');
             $city = $city->name;
-            $state = $state->name;
+            $state = $state->uf;
 
             return urldecode($request->url()) == "$url/weather?key=&locale=en&city_name=$city,$state";
         });

@@ -64,7 +64,7 @@ class ListSavedLocationsTest extends TestCase
         Http::assertSent(function (Request $request) use ($location) {
             $url = config('services.hgbrasil.url');
             $city = $location->city->name;
-            $state = $location->state->name;
+            $state = $location->state->uf;
 
             return urldecode($request->url()) == "$url/weather?key=&locale=en&city_name=$city,$state";
         });
